@@ -3,4 +3,10 @@
  * Copyright (c) 2021 nghinv@lumi.biz
  */
 
-export * from './Slider';
+import Slider, { SliderProps } from './Slider';
+
+export default Slider;
+
+export {
+  SliderProps,
+};
