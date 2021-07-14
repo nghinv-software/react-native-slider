@@ -9,7 +9,10 @@ import equals from 'react-fast-compare';
 import Animated, { useSharedValue } from 'react-native-reanimated';
 import SliderComponent, { SliderComponentProps } from './SliderComponent';
 
-type SliderComponentType = Omit<SliderComponentProps, 'value' | 'onStart' | 'onConfirm'>;
+type SliderComponentType = Omit<
+  SliderComponentProps,
+  'value' | 'onStart' | 'onConfirm'
+>;
 
 export interface SliderProps extends SliderComponentType {
   value?: number;
@@ -24,18 +27,11 @@ Slider.defaultProps = {
 };
 
 function Slider(props: SliderProps) {
-  const {
-    value,
-    animatedValue,
-    onStart,
-    onChange,
-    onConfirm,
-    ...otherProps
-  } = props;
+  const { value, animatedValue, onStart, onChange, onConfirm, ...otherProps } = props;
   const valueAnim = animatedValue ?? useSharedValue(value!);
 
   useEffect(() => {
-    if (!!value) {
+    if (value) {
       valueAnim.value = value!;
     }
   }, [value, valueAnim]);

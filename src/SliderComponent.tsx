@@ -4,10 +4,29 @@
  */
 
 import React, { useCallback } from 'react';
-import { View, StyleSheet, ViewStyle, StyleProp, LayoutChangeEvent } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ViewStyle,
+  StyleProp,
+  LayoutChangeEvent,
+} from 'react-native';
 import equals from 'react-fast-compare';
-import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring, runOnJS, interpolate, withTiming, Extrapolate, useAnimatedReaction } from 'react-native-reanimated';
-import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
+import Animated, {
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  runOnJS,
+  interpolate,
+  withTiming,
+  Extrapolate,
+  useAnimatedReaction,
+} from 'react-native-reanimated';
+import {
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+} from 'react-native-gesture-handler';
 import { springConfig, timingConfig } from '@nghinv/react-native-animated';
 
 export interface SliderComponentProps {
@@ -55,7 +74,12 @@ function computedValue(
 ) {
   'worklet';
 
-  const value = interpolate(translateX.value, [0, width.value], [min, max], Extrapolate.CLAMP);
+  const value = interpolate(
+    translateX.value,
+    [0, width.value],
+    [min, max],
+    Extrapolate.CLAMP,
+  );
 
   return Math.round(value / step) * step;
 }
@@ -98,16 +122,26 @@ function SliderComponent(props: SliderComponentProps) {
   const scale = useSharedValue(1);
   const isGestureActive = useSharedValue(false);
 
-  const onLayout = useCallback((event: LayoutChangeEvent) => {
-    sliderWidth.value = event.nativeEvent.layout.width;
-    const transX = computedTranslateFromValue(value.value, event.nativeEvent.layout.width, min!, max!);
-    translateX.value = withTiming(transX, timingConfig);
-  }, [sliderWidth, max, min, value, translateX]);
+  const onLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      sliderWidth.value = event.nativeEvent.layout.width;
+      const transX = computedTranslateFromValue(
+        value.value,
+        event.nativeEvent.layout.width,
+        min!,
+        max!,
+      );
+      translateX.value = withTiming(transX, timingConfig);
+    },
+    [sliderWidth, max, min, value, translateX],
+  );
 
   const onHapticFeedback = useCallback(() => {
     const ReactNativeHapticFeedback = require('react-native-haptic-feedback').default;
     if (!ReactNativeHapticFeedback) {
-      console.warn('react-native-haptic-feedback is require when set hapticFeedback equal true');
+      console.warn(
+        'react-native-haptic-feedback is require when set hapticFeedback equal true',
+      );
       return;
     }
     const options = {
@@ -117,7 +151,10 @@ function SliderComponent(props: SliderComponentProps) {
     ReactNativeHapticFeedback.trigger('impactLight', options);
   }, []);
 
-  const onGestureEvent = useAnimatedGestureHandler<PanGestureHandlerGestureEvent, { x: number }>({
+  const onGestureEvent = useAnimatedGestureHandler<
+    PanGestureHandlerGestureEvent,
+    { x: number }
+  >({
     onStart: (_, ctx) => {
       isGestureActive.value = true;
       ctx.x = translateX.value;
@@ -128,15 +165,32 @@ function SliderComponent(props: SliderComponentProps) {
     },
     onActive: (event, ctx) => {
       const transX = event.translationX + ctx.x;
-      const newValue = computedValue(translateX, sliderWidth, min!, max!, step!);
+      const newValue = computedValue(
+        translateX,
+        sliderWidth,
+        min!,
+        max!,
+        step!,
+      );
       valueAnimated.value = newValue;
       translateX.value = Math.min(sliderWidth.value, Math.max(0, transX));
     },
     onFinish: () => {
       scale.value = withSpring(1, springConfig);
-      const newValue = computedValue(translateX, sliderWidth, min!, max!, step!);
+      const newValue = computedValue(
+        translateX,
+        sliderWidth,
+        min!,
+        max!,
+        step!,
+      );
       valueAnimated.value = newValue;
-      const transX = computedTranslateFromValue(newValue, sliderWidth.value, min!, max!);
+      const transX = computedTranslateFromValue(
+        newValue,
+        sliderWidth.value,
+        min!,
+        max!,
+      );
       translateX.value = withSpring(transX, springConfig);
 
       if (onConfirm) {
@@ -150,22 +204,33 @@ function SliderComponent(props: SliderComponentProps) {
     },
   });
 
-  useAnimatedReaction(() => {
-    return valueAnimated.value;
-  }, (newValue, oldValue) => {
-    if (onChange && isGestureActive.value && newValue !== oldValue) {
-      runOnJS(onChange)(newValue!);
-    }
-  });
+  useAnimatedReaction(
+    () => {
+      return valueAnimated.value;
+    },
+    (newValue, oldValue) => {
+      if (onChange && isGestureActive.value && newValue !== oldValue) {
+        runOnJS(onChange)(newValue!);
+      }
+    },
+  );
 
-  useAnimatedReaction(() => {
-    return value.value;
-  }, (newValue, oldValue) => {
-    if (!isGestureActive.value && newValue !== oldValue) {
-      const transX = computedTranslateFromValue(newValue, sliderWidth.value, min!, max!);
-      translateX.value = withTiming(transX, timingConfig);
-    }
-  });
+  useAnimatedReaction(
+    () => {
+      return value.value;
+    },
+    (newValue, oldValue) => {
+      if (!isGestureActive.value && newValue !== oldValue) {
+        const transX = computedTranslateFromValue(
+          newValue,
+          sliderWidth.value,
+          min!,
+          max!,
+        );
+        translateX.value = withTiming(transX, timingConfig);
+      }
+    },
+  );
 
   const thumbStyle = useAnimatedStyle(() => {
     return {
@@ -179,9 +244,7 @@ function SliderComponent(props: SliderComponentProps) {
 
   const thumbStyleScale = useAnimatedStyle(() => {
     return {
-      transform: [
-        { scale: scale.value },
-      ],
+      transform: [{ scale: scale.value }],
     };
   });
 
@@ -221,10 +284,7 @@ function SliderComponent(props: SliderComponentProps) {
           ]}
         />
       </View>
-      <PanGestureHandler
-        onGestureEvent={onGestureEvent}
-        enabled={!disabled}
-      >
+      <PanGestureHandler onGestureEvent={onGestureEvent} enabled={!disabled}>
         <Animated.View
           style={[
             styles.thumb,
