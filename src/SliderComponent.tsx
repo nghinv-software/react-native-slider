@@ -118,7 +118,6 @@ function SliderComponent(props: SliderComponentProps) {
   } = props;
   const sliderWidth = useSharedValue(typeof width === 'number' ? width : 0);
   const translateX = useSharedValue(0);
-  const valueAnimated = useSharedValue(value.value);
   const scale = useSharedValue(1);
   const isGestureActive = useSharedValue(false);
 
@@ -172,7 +171,7 @@ function SliderComponent(props: SliderComponentProps) {
         max!,
         step!,
       );
-      valueAnimated.value = newValue;
+      value.value = newValue;
       translateX.value = Math.min(sliderWidth.value, Math.max(0, transX));
     },
     onFinish: () => {
@@ -184,7 +183,7 @@ function SliderComponent(props: SliderComponentProps) {
         max!,
         step!,
       );
-      valueAnimated.value = newValue;
+      value.value = newValue;
       const transX = computedTranslateFromValue(
         newValue,
         sliderWidth.value,
@@ -206,7 +205,7 @@ function SliderComponent(props: SliderComponentProps) {
 
   useAnimatedReaction(
     () => {
-      return valueAnimated.value;
+      return value.value;
     },
     (newValue, oldValue) => {
       if (onChange && isGestureActive.value && newValue !== oldValue) {

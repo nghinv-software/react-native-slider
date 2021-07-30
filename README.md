@@ -96,6 +96,11 @@ export default App;
 | hapticFeedback | `boolean` | `false` |  |
 
 
+---
+## Credits
+
+- [@Nghi-NV](https://github.com/Nghi-NV)
+
 [version-badge]: https://img.shields.io/npm/v/@nghinv/react-native-slider.svg?style=flat-square
 [package]: https://www.npmjs.com/package/@nghinv/react-native-slider
 [license-badge]: https://img.shields.io/npm/l/@nghinv/react-native-slider.svg?style=flat-square
