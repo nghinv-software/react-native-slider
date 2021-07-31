@@ -26,6 +26,12 @@ or
 npm install @nghinv/react-native-slider
 ```
 
+- peerDependencies
+
+```sh
+yarn add react-native-gesture-handler react-native-reanimated @nghinv/react-native-animated
+```
+
 ## Usage
 
 ```js
